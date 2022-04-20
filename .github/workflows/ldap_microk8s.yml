@@ -1,4 +1,4 @@
-name: opendj
+name: microk8s opendj
 # This builds, packages and tests pygluu-kubernetes
 on:
   push:

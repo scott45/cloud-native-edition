@@ -1,4 +1,4 @@
-name: pgsql
+name: microk8s pgsql
 # This builds, packages and tests pygluu-kubernetes
 on:
   push:

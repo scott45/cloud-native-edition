@@ -1,4 +1,4 @@
-name: couchbase
+name: microk8s couchbase
 on:
   push:
     branches:
