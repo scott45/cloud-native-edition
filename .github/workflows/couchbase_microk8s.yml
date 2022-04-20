@@ -215,7 +215,7 @@ jobs:
           "CONFIRM_PARAMS": "Y"
         }
         EOF
-        wget ${{ secrets.cbpackage }}
+        wget https://packages.couchbase.com/couchbase-operator/2.2.3/couchbase-autonomous-operator-kubernetes_2.2.3-linux-x86_64.tar.gz
         sudo make zipapp
         wget https://gist.githubusercontent.com/moabu/9da0c5d2b5b3d297be8583c79bbba321/raw/c6e7fe5e28742cafc314280db9ee717173af9779/couchbase-cluster.yaml
         sudo ./pygluu-kubernetes.pyz install-couchbase || sudo ./pygluu-kubernetes.pyz install-couchbase
