@@ -213,6 +213,8 @@ jobs:
           "ENABLE_SAML_BOOLEAN": "true",
           "EDIT_IMAGE_NAMES_TAGS": "N",
           "CONFIRM_PARAMS": "Y"
+          "GLUU_SCIM_PROTECTION_MODE": "OAUTH",
+          "NGINX_LEGACY": "N"
         }
         EOF
         wget https://packages.couchbase.com/couchbase-operator/2.2.3/couchbase-autonomous-operator-kubernetes_2.2.3-linux-x86_64.tar.gz
