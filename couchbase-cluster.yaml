@@ -1,0 +1,110 @@
+apiVersion: couchbase.com/v2
+kind: CouchbaseCluster
+metadata:
+  name: cbjans
+spec:
+  image: couchbase/server:6.6.0
+  antiAffinity: false
+  networking:
+    tls:
+      static:
+        serverSecret: couchbase-server-tls
+        operatorSecret: couchbase-operator-tls
+  security:
+    adminSecret: cb-auth
+    rbac:
+      managed: true
+      selector:
+        matchLabels:
+          cluster: cbjans
+  exposeAdminConsole: true
+  adminConsoleServices:
+  - data
+  exposedFeatures:
+  - xdcr
+  - client
+  exposedFeatureServiceType: NodePort
+  cluster:
+    autoCompaction:
+      databaseFragmentationThreshold:
+        percent: 30
+        size: 1Gi
+      viewFragmentationThreshold:
+        percent: 30
+        size: 1Gi
+      parallelCompaction: false
+      timeWindow:
+        start: 02:00
+        end: 06:00
+        abortCompactionOutsideWindow: true
+      tombstonePurgeInterval: 72h
+    dataServiceMemoryQuota: 1024Mi
+    indexServiceMemoryQuota: 512Mi
+    searchServiceMemoryQuota: 512Mi
+    eventingServiceMemoryQuota: 512Mi
+    analyticsServiceMemoryQuota: 1024Mi
+    indexStorageSetting: memory_optimized
+    autoFailoverTimeout: 10s
+    autoFailoverMaxCount: 3
+    autoFailoverOnDataDiskIssues: true
+    autoFailoverOnDataDiskIssuesTimePeriod: 120s
+    autoFailoverServerGroup: false
+  buckets:
+    managed: true
+    selector:
+      matchLabels:
+        cluster: jans-couchbase
+  servers:
+  - name: allServices
+    size: 1
+    services:
+    - data
+    - index
+    - query
+    - search
+    - eventing
+    - analytics
+    volumeMounts:
+      default: pvc-general
+      data: pvc-data
+      index: pvc-index
+      analytics:
+      - pvc-analytics
+  securityContext:
+    fsGroup: 1000
+  volumeClaimTemplates:
+  - metadata:
+      name: pvc-general
+    spec:
+      storageClassName: couchbase-sc
+      resources:
+        requests:
+          storage: 5Gi
+  - metadata:
+      name: pvc-data
+    spec:
+      storageClassName: couchbase-sc
+      resources:
+        requests:
+          storage: 5Gi
+  - metadata:
+      name: pvc-index
+    spec:
+      storageClassName: couchbase-sc
+      resources:
+        requests:
+          storage: 5Gi
+  - metadata:
+      name: pvc-query
+    spec:
+      storageClassName: couchbase-sc
+      resources:
+        requests:
+          storage: 5Gi
+  - metadata:
+      name: pvc-analytics
+    spec:
+      storageClassName: couchbase-sc
+      resources:
+        requests:
+          storage: 5Gi
