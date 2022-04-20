@@ -62,7 +62,7 @@ jobs:
         cp -rf ./cloud-native-edition/pygluu/kubernetes/templates/couchbase/couchbase-buckets.yaml .
         cp -rf ./cloud-native-edition/pygluu/kubernetes/templates/couchbase/couchbase-ephemeral-buckets.yaml .
         cd cloud-native-edition
-        git checkout 4.2
+        git checkout 4.3
         cd ..
         cp -rf ./couchbase ./cloud-native-edition/pygluu/kubernetes/templates
         cp -rf couchbase-buckets.yaml ./cloud-native-edition
@@ -75,7 +75,7 @@ jobs:
         {
           "ACCEPT_GLUU_LICENSE": "Y",
           "TEST_ENVIRONMENT": "Y",
-          "GLUU_VERSION": "4.2",
+          "GLUU_VERSION": "4.3",
           "GLUU_UPGRADE_TARGET_VERSION": "",
           "NGINX_INGRESS_NAMESPACE": "ingress-nginx",
           "GLUU_HELM_RELEASE_NAME": "cn",
