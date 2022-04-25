@@ -209,9 +209,10 @@ jobs:
         sudo snap alias microk8s.kubectl kubectl
         sudo microk8s.status --wait-ready
         sudo microk8s.enable dns registry ingress
-        sudo mkdir $HOME/.kube
-        sudo touch $HOME/.kube/config
-        sudo microk8s.kubectl config view > $HOME/.kube/config
+        cd /home/runner/work/test/
+        sudo mkdir .kube
+        sudo touch .kube/config
+        sudo microk8s.kubectl config view > .kube/config
     
     - name: Install Helm
       run: |
