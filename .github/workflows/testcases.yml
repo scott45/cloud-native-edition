@@ -10,8 +10,6 @@ on:
       - "setup.py"
   pull_request:
     branches:
-      - master
-      - main
       - 4.3
   workflow_dispatch:
 
