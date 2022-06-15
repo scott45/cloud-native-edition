@@ -218,34 +218,35 @@ jobs:
         ./get_helm.sh
         sudo helm version
 
-    # - name: Install Couchbase
-    #   if: ${{ matrix.persistence-backends == '"couchbase"' }}
+    - name: Install Couchbase
+      if: ${{ matrix.persistence-backends == '"couchbase"' }}
+      run: |
+          cd /home/runner/work/test/
+          helm repo add couchbase https://couchbase-partners.github.io/helm-charts/
+          helm repo update
+          helm install cbns --set cluster.name=cbns couchbase/couchbase-operator -n cbns
+          COUCHBASE_IP=$(sudo microk8s.kubectl get po cbgluu-0000 -n cbns --template={{.status.podIP}})
+          cat settings.json | sed 's/"INSTALL_COUCHBASE": "Y"/"INSTALL_COUCHBASE": "N"/g' |  sed -s "s@cbgluu.cbns.svc.cluster.local@$COUCHBASE_IP@g" > tmpfile.py && mv tmpfile.py settings.json
+
+    # - name: SQL
+    #   if: ${{ matrix.persistence-backends == '"sql"' }}
     #   run: |
     #       cd /home/runner/work/test/
-    #       wget https://packages.couchbase.com/couchbase-operator/2.2.3/couchbase-autonomous-operator-kubernetes_2.2.3-linux-x86_64.tar.gz
-    #       sudo ./pygluu-kubernetes.pyz install-couchbase || sudo ./pygluu-kubernetes.pyz install-couchbase
-    #       # COUCHBASE_IP=$(sudo microk8s.kubectl get po cbgluu-0000 -n cbns --template={{.status.podIP}})
+    #       sudo microk8s config > config
     #       cat settings.json | sed 's/"INSTALL_COUCHBASE": "Y"/"INSTALL_COUCHBASE": "N"/g' |  sed -s "s@cbgluu.cbns.svc.cluster.local@$COUCHBASE_IP@g" > tmpfile.py && mv tmpfile.py settings.json
+    #       cat settings.json | sed 's/"GLUU_INSTALL_SQL": "N"/"GLUU_INSTALL_SQL": "Y"/g' > tmpfile.py && mv tmpfile.py settings.json
+    #       cat settings.json | sed 's/"GLUU_SQL_DB_HOST": "gluu-postgresql.sql.svc.cluster.local"/"GLUU_SQL_DB_HOST": "gluu-mysql.sql.svc.cluster.local"/g' > tmpfile.py && mv tmpfile.py settings.json
+    #       touch sqlfile
 
-    - name: SQL
-      if: ${{ matrix.persistence-backends == '"sql"' }}
-      run: |
-          cd /home/runner/work/test/
-          sudo microk8s config > config
-          cat settings.json | sed 's/"INSTALL_COUCHBASE": "Y"/"INSTALL_COUCHBASE": "N"/g' |  sed -s "s@cbgluu.cbns.svc.cluster.local@$COUCHBASE_IP@g" > tmpfile.py && mv tmpfile.py settings.json
-          cat settings.json | sed 's/"GLUU_INSTALL_SQL": "N"/"GLUU_INSTALL_SQL": "Y"/g' > tmpfile.py && mv tmpfile.py settings.json
-          cat settings.json | sed 's/"GLUU_SQL_DB_HOST": "gluu-postgresql.sql.svc.cluster.local"/"GLUU_SQL_DB_HOST": "gluu-mysql.sql.svc.cluster.local"/g' > tmpfile.py && mv tmpfile.py settings.json
-          touch sqlfile
-
-    - name: PostGRE
-      if: ${{ matrix.persistence-backends == '"pgsql"' }}
-      run: |
-          cd /home/runner/work/test/
-          cat settings.json | sed 's/"INSTALL_COUCHBASE": "Y"/"INSTALL_COUCHBASE": "N"/g' |  sed -s "s@cbgluu.cbns.svc.cluster.local@$COUCHBASE_IP@g" > tmpfile.py && mv tmpfile.py settings.json
-          cat settings.json | sed 's/"GLUU_INSTALL_SQL": "N"/"GLUU_INSTALL_SQL": "Y"/g' > tmpfile.py && mv tmpfile.py settings.json
-          cat settings.json | sed 's/"GLUU_SQL_DB_DIALECT": "mysql"/"GLUU_SQL_DB_DIALECT": "pgsql"/g' > tmpfile.py && mv tmpfile.py settings.json
-          cat settings.json | sed 's/"PERSISTENCE_BACKEND": "pgsql"/"PERSISTENCE_BACKEND": "sql"/g' > tmpfile.py && mv tmpfile.py settings.json
-          touch sqlfile
+    # - name: PostGRE
+    #   if: ${{ matrix.persistence-backends == '"pgsql"' }}
+    #   run: |
+    #       cd /home/runner/work/test/
+    #       cat settings.json | sed 's/"INSTALL_COUCHBASE": "Y"/"INSTALL_COUCHBASE": "N"/g' |  sed -s "s@cbgluu.cbns.svc.cluster.local@$COUCHBASE_IP@g" > tmpfile.py && mv tmpfile.py settings.json
+    #       cat settings.json | sed 's/"GLUU_INSTALL_SQL": "N"/"GLUU_INSTALL_SQL": "Y"/g' > tmpfile.py && mv tmpfile.py settings.json
+    #       cat settings.json | sed 's/"GLUU_SQL_DB_DIALECT": "mysql"/"GLUU_SQL_DB_DIALECT": "pgsql"/g' > tmpfile.py && mv tmpfile.py settings.json
+    #       cat settings.json | sed 's/"PERSISTENCE_BACKEND": "pgsql"/"PERSISTENCE_BACKEND": "sql"/g' > tmpfile.py && mv tmpfile.py settings.json
+    #       touch sqlfile
 
 
     - name: Test Pygluu kubernetes
