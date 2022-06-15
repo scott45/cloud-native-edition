@@ -210,8 +210,10 @@ jobs:
         sudo snap alias microk8s.kubectl kubectl
         sudo microk8s.status --wait-ready
         sudo microk8s.enable dns registry ingress
-        sudo usermod -a -G microk8s runner
-        mkdir ~/.kube && sudo chown -f -R runner ~/.kube && sudo touch ~/.kube/config && sudo microk8s.config > ~/.kube/config
+        sudo usermod -a -G microk8s $USER
+        sudo chown -f -R $USER ~/.kube
+        su - $USER
+        microk8s.config > ~/.kube/config
     
     - name: Install Helm
       run: |
